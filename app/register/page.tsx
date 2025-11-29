@@ -4,7 +4,7 @@ import { ChangeEvent, FormEvent, useState } from "react";
 import Link from "next/link";
 import { z } from "zod";
 import axios from "axios";
-import { useAuth } from "../context/registerContext";
+import { useAuth } from "../context/authContext";
 
 interface ErrorsState {
   name: string | null;
@@ -33,6 +33,9 @@ const RegisterPage = () => {
     password: null,
   });
 
+  const [status, setStatus] = useState<string>('');
+  const [loading, setLoading] = useState<boolean>(false);
+
   const { token, setToken } = useAuth();
   function handleChange(e: ChangeEvent<HTMLInputElement>) {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -42,6 +45,7 @@ const RegisterPage = () => {
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    setLoading(true);
 
     const result = registerSchema.safeParse(formData);
 
@@ -66,17 +70,20 @@ const RegisterPage = () => {
         }
       );
       console.log(res.data);
+      setStatus(res.data.msg || 'Registration successful! Please verify your email.');
       setFormData({ name: "", email: "", password: "" });
       setToken(res.data.token);
       console.log(res.data);
     } catch (e) {
       console.log(e);
+    } finally {
+      setLoading(false);
     }
   }
   return (
     <div className="flex flex-col gap-5 h-screen items-center justify-center">
       <h1 className="text-3xl text-primary text-center">
-        Log in to your account
+        Create your account
       </h1>
       <form className="flex flex-col gap-3" onSubmit={handleSubmit}>
         <label className="flex flex-col gap-1 text-primary">
@@ -130,8 +137,11 @@ const RegisterPage = () => {
             <span className="text-red-500 text-sm">{errors.password}</span>
           )}
         </label>
-        <button className="bg-primary text-bg border py-2.5 font-semibold border-primary text-xl rounded-xl cursor-pointer hover:bg-transparent hover:text-primary transition duration-300">
-          Register
+        {status && (
+          <span className="text-green-500 text-sm">{status}</span>
+        )}
+        <button disabled={loading} className="bg-primary text-bg border py-2.5 font-semibold border-primary text-xl rounded-xl cursor-pointer hover:bg-transparent hover:text-primary transition duration-300">
+          {loading ? 'Registering...' : 'Register'}
         </button>
         <h5 className="text-xl text-white ">
           Already have an account?{" "}

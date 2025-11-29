@@ -1,3 +1,4 @@
+'use client'
 import {
   createContext,
   type Dispatch,
@@ -7,7 +8,7 @@ import {
   useState,
 } from "react";
 import type { ReactNode } from "react";
-import { useNavigate } from "react-router-dom";
+import { useRouter } from "next/navigation";
 
 interface RegisterContext {
   token: string | null;
@@ -15,7 +16,7 @@ interface RegisterContext {
   logout: () => void;
 }
 
-interface RegisterProviderProps {
+interface AuthProviderProps {
   children: ReactNode;
 }
 
@@ -35,7 +36,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     return tokenFromStorage ? tokenFromStorage : null;
   });
 
-  const navigate = useNavigate();
+  const router = useRouter();
 
   useEffect(() => {
     if (token) {
@@ -48,8 +49,10 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   function logout() {
     setToken(null);
     localStorage.removeItem("token");
-    navigate("/signin");
+    router.push("/login");
   }
+
+  console.log("AuthContext token:", token);
 
   return (
     <authContext.Provider value={{ token, setToken, logout }}>

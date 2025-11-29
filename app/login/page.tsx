@@ -3,8 +3,9 @@ import clsx from "clsx";
 import { ChangeEvent, FormEvent, useState } from "react";
 import Link from "next/link";
 import { z } from "zod";
-import { useAuth } from "../context/registerContext";
+import { useAuth } from "../context/authContext";
 import axios from "axios";
+import { useRouter } from "next/navigation";
 
 interface ErrorsState {
   email: string | null;
@@ -30,9 +31,14 @@ const LoginPage = () => {
   const [errors, setErrors] = useState<ErrorsState>({
     email: "",
     password: "",
+    general: ''
   });
+  const [status, setStatus] = useState<string>('');
+  const [loading, setLoading] = useState<boolean>(false);
 
   const { setToken } = useAuth();
+
+  const router = useRouter()
 
   function handleChange(e: ChangeEvent<HTMLInputElement>) {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -42,22 +48,9 @@ const LoginPage = () => {
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    setLoading(true);
 
     const result = loginSchema.safeParse(formData);
-
-    try {
-      const res = await axios.post(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/auth/register`,
-        {
-          ...formData,
-        }
-      );
-      setToken(res.data.token);
-      console.log(formData);
-      setFormData({ email: "", password: "" });
-    } catch (e) {
-      console.log(e);
-    }
 
     if (!result.success) {
       const flattened = z.flattenError(result.error);
@@ -70,6 +63,25 @@ const LoginPage = () => {
       });
       return;
     }
+
+    try {
+      const res = await axios.post(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/auth/login`,
+        {
+          ...formData,
+        }
+      );
+      setStatus(res.data.msg)
+      setToken(res.data.token);
+      setFormData({ email: "", password: "" });
+      router.push("/");
+    } catch (e) {
+      console.log(e);
+    } finally {
+      setLoading(false);
+    }
+
+
   }
   return (
     <div className="flex flex-col gap-5 h-screen items-center justify-center">
@@ -111,11 +123,14 @@ const LoginPage = () => {
             <span className="text-red-500 text-sm">{errors.password}</span>
           )}
         </label>
+        {status
+          && <span className="text-green-500 text-sm">{status}</span>
+        }
         <button className="bg-primary text-bg border py-2.5 font-semibold border-primary text-xl rounded-xl cursor-pointer hover:bg-transparent hover:text-primary transition duration-300">
-          Log in
+          {loading ? 'Logging in...' : 'Log In'}
         </button>
         <h5 className="text-xl text-white ">
-          Don't have an account ?{" "}
+          Don&apos;t have an account ?{" "}
           <Link
             href={"/register"}
             className="text-primary hover:underline transition duration-300"
