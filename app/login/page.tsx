@@ -10,6 +10,7 @@ import { useRouter } from "next/navigation";
 interface ErrorsState {
   email: string | null;
   password: string | null;
+  general: string | null;
 }
 
 interface FormDataState {
@@ -31,14 +32,14 @@ const LoginPage = () => {
   const [errors, setErrors] = useState<ErrorsState>({
     email: "",
     password: "",
-    general: ''
+    general: "",
   });
-  const [status, setStatus] = useState<string>('');
+  const [status, setStatus] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
 
   const { setToken } = useAuth();
 
-  const router = useRouter()
+  const router = useRouter();
 
   function handleChange(e: ChangeEvent<HTMLInputElement>) {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -60,6 +61,7 @@ const LoginPage = () => {
       setErrors({
         email: fieldErrors.email?.[0] || null,
         password: fieldErrors.password?.[0] || null,
+        general: null,
       });
       return;
     }
@@ -71,17 +73,19 @@ const LoginPage = () => {
           ...formData,
         }
       );
-      setStatus(res.data.msg)
+      setStatus(res.data.msg);
       setToken(res.data.token);
       setFormData({ email: "", password: "" });
       router.push("/");
-    } catch (e) {
-      console.log(e);
+    } catch (e: any) {
+      if (e.response?.data?.message) {
+        setErrors({ ...errors, general: e.response?.data?.message });
+      } else {
+        setErrors({ ...errors, general: "Something went wrong" });
+      }
     } finally {
       setLoading(false);
     }
-
-
   }
   return (
     <div className="flex flex-col gap-5 h-screen items-center justify-center">
@@ -123,11 +127,12 @@ const LoginPage = () => {
             <span className="text-red-500 text-sm">{errors.password}</span>
           )}
         </label>
-        {status
-          && <span className="text-green-500 text-sm">{status}</span>
-        }
+        {status && <span className="text-green-500 text-sm">{status}</span>}
+        {errors.general && (
+          <span className="text-red-500 text-sm">{errors.general}</span>
+        )}
         <button className="bg-primary text-bg border py-2.5 font-semibold border-primary text-xl rounded-xl cursor-pointer hover:bg-transparent hover:text-primary transition duration-300">
-          {loading ? 'Logging in...' : 'Log In'}
+          {loading ? "Logging in..." : "Log In"}
         </button>
         <h5 className="text-xl text-white ">
           Don&apos;t have an account ?{" "}
