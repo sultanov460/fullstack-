@@ -3,7 +3,7 @@ import clsx from "clsx";
 import { ChangeEvent, FormEvent, useState } from "react";
 import Link from "next/link";
 import { z } from "zod";
-import { useAuth } from "../context/authContext";
+import { useAuth } from "@/context/authContext";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 
@@ -19,7 +19,7 @@ interface FormDataState {
 }
 
 const loginSchema = z.object({
-  email: z.string().email("Invalid email"),
+  email: z.email("Invalid email"),
   password: z.string().min(6, "Password must be at least 6 characters"),
 });
 
@@ -37,7 +37,7 @@ const LoginPage = () => {
   const [status, setStatus] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
 
-  const { setToken } = useAuth();
+  const { refreshUser } = useAuth()
 
   const router = useRouter();
 
@@ -69,12 +69,13 @@ const LoginPage = () => {
     try {
       const res = await axios.post(
         `${process.env.NEXT_PUBLIC_API_URL}/api/auth/login`,
-        {
-          ...formData,
-        }
+        formData,
+        { withCredentials: true }
       );
       setStatus(res.data.msg);
-      setToken(res.data.token);
+
+      await refreshUser();
+
       setFormData({ email: "", password: "" });
       router.push("/");
     } catch (e: any) {
@@ -131,6 +132,7 @@ const LoginPage = () => {
         {errors.general && (
           <span className="text-red-500 text-sm">{errors.general}</span>
         )}
+        <Link className="underline text-primary" href='/forgot-password'>Forgot password?</Link>
         <button className="bg-primary text-bg border py-2.5 font-semibold border-primary text-xl rounded-xl cursor-pointer hover:bg-transparent hover:text-primary transition duration-300">
           {loading ? "Logging in..." : "Log In"}
         </button>

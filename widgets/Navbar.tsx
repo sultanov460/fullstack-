@@ -1,10 +1,10 @@
 'use client'
 import Link from "next/link";
 import Container from "./Container";
-import { useAuth } from "@/app/context/authContext";
+import { useAuth } from "@/context/authContext";
 
 const Navbar = () => {
-  const { token, logout } = useAuth();
+  const { user, logout } = useAuth();
   return (
     <div className="border-b border-primary text-primary">
       <Container className="flex justify-between  items-center  py-2.5">
@@ -14,7 +14,7 @@ const Navbar = () => {
         >
           Cyberpunk
         </Link>
-        {token ? (
+        {user ? (
           <button onClick={logout}>Logout</button>
         ) : (
           <Link

@@ -4,7 +4,8 @@ import { ChangeEvent, FormEvent, useState } from "react";
 import Link from "next/link";
 import { z } from "zod";
 import axios from "axios";
-import { useAuth } from "../context/authContext";
+import { useAuth } from "@/context/authContext";
+
 
 interface ErrorsState {
   name: string | null;

@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { FaArrowRight } from "react-icons/fa";
 
 const Hero = () => {
@@ -13,6 +14,9 @@ const Hero = () => {
       <button className="bg-primary text-xl text-bg px-4 py-2.5 border border-primary rounded-2xl hover:bg-transparent hover:text-primary transition duration-300 flex items-center gap-3 cursor-pointer">
         Get started <FaArrowRight size={20} />
       </button>
+      <Link href={'/profile'} className="bg-primary text-xl text-bg px-4 py-2.5 border border-primary rounded-2xl hover:bg-transparent hover:text-primary transition duration-300 flex items-center gap-3 cursor-pointer">
+        Go to Profile <FaArrowRight size={20} />
+      </Link>
     </div>
   );
 };
