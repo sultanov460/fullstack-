@@ -1,11 +1,15 @@
 "use client";
 
 import axios from "axios";
+import { useRouter } from "next/navigation";
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  const router = useRouter();
 
   useEffect(() => {
     if (status) {
@@ -29,9 +33,13 @@ export default function ForgotPassword() {
         { email }
       );
 
-      setStatus("OTP code has been successfully sent to your email.");
-    } catch (err) {
-      setStatus("Failed to send OTP code. Please try again later.");
+      setStatus(res.data.msg);
+
+      setTimeout(() => {
+        router.push(`/reset-password?email=${email}`);
+      }, 2000);
+    } catch (err: any) {
+      setError(err?.response?.data?.message);
       console.log("Error:", err);
     }
     setEmail("");
@@ -53,9 +61,10 @@ export default function ForgotPassword() {
           placeholder="you@example.com"
           className="border border-primary bg-transparent w-80 px-2 py-2.5  outline-none max-w-150 rounded-xl"
         />
-        {status && <span>{status}</span>}
+        {status && <span className="text-green-500">{status}</span>}
+        {error && <span className="text-red-500">{error}</span>}
         <button className="bg-primary text-bg border py-2.5 w-80 px-5 font-semibold border-primary text-xl rounded-xl cursor-pointer hover:bg-transparent hover:text-primary transition duration-300">
-          Reset password
+          Send
         </button>
       </form>
     </div>

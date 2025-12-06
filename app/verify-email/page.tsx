@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -9,47 +9,44 @@ const VerifyEmailPage = () => {
   const token = searchParams.get("token");
   const email = searchParams.get("email");
 
-  const [status, setStatus] = useState<string>('Verifying...');
+  const [status, setStatus] = useState<string>("Verifying...");
 
   const { setToken } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
     if (!email || !token) {
-      setStatus('Invalid verification link.');
+      setStatus("Invalid verification link.");
       return;
     }
 
     const verifyUser = async () => {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/verify-email`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, token }),
-      });
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/auth/verify-email`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email, token }),
+        }
+      );
 
       const data = await res.json();
 
       if (res.ok) {
-        setStatus('Email verified successfully!');
+        setStatus("Email verified successfully!");
         setToken(data.token);
-        router.push('/');
-      }
-      else setStatus(data.error || 'Verification failed.');
-    }
+        router.push("/");
+      } else setStatus(data.error || "Verification failed.");
+    };
 
-    verifyUser()
-
+    verifyUser();
   }, [token, email]);
-
-
 
   return (
     <div className="h-screen flex items-center justify-center">
-      <h1 className="text-primary text-5xl font-semibold">
-        {status}
-      </h1>
+      <h1 className="text-primary text-5xl font-semibold">{status}</h1>
     </div>
   );
 };
