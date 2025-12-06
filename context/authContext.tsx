@@ -1,10 +1,5 @@
-'use client'
-import {
-  createContext,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
+"use client";
+import { createContext, useContext, useEffect, useState } from "react";
 import type { ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
@@ -39,13 +34,15 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   async function refreshUser() {
     setLoading(true);
     try {
-      const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/me`, { withCredentials: true });
+      const res = await axios.get(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/auth/me`,
+        { withCredentials: true }
+      );
 
-      setUser(res.data.user)
-
+      setUser(res.data.user);
     } catch (e) {
       console.log(e);
-      setUser(null)
+      setUser(null);
     } finally {
       setLoading(false);
     }
@@ -57,7 +54,11 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   async function logout() {
     try {
-      await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/logout`, {}, { withCredentials: true });
+      await axios.post(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/auth/logout`,
+        {},
+        { withCredentials: true }
+      );
       setUser(null);
       router.push("/login");
     } catch (e) {
@@ -65,10 +66,11 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     }
   }
 
-
   return (
     <authContext.Provider value={{ user, loading, refreshUser, logout }}>
       {children}
     </authContext.Provider>
   );
 };
+
+//gggg
