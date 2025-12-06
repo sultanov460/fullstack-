@@ -5,7 +5,7 @@ import Link from "next/link";
 import { z } from "zod";
 import axios from "axios";
 import { useAuth } from "@/context/authContext";
-
+import { GuestRoute } from "@/components/GuestRoute";
 
 interface ErrorsState {
   name: string | null;
@@ -34,7 +34,7 @@ const RegisterPage = () => {
     password: null,
   });
 
-  const [status, setStatus] = useState<string>('');
+  const [status, setStatus] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
 
   const { token, setToken } = useAuth();
@@ -71,7 +71,9 @@ const RegisterPage = () => {
         }
       );
       console.log(res.data);
-      setStatus(res.data.msg || 'Registration successful! Please verify your email.');
+      setStatus(
+        res.data.msg || "Registration successful! Please verify your email."
+      );
       setFormData({ name: "", email: "", password: "" });
       setToken(res.data.token);
       console.log(res.data);
@@ -82,79 +84,82 @@ const RegisterPage = () => {
     }
   }
   return (
-    <div className="flex flex-col gap-5 h-screen items-center justify-center">
-      <h1 className="text-3xl text-primary text-center">
-        Create your account
-      </h1>
-      <form className="flex flex-col gap-3" onSubmit={handleSubmit}>
-        <label className="flex flex-col gap-1 text-primary">
-          <span className="text-primary text-xl font-semibold">Name</span>
-          <input
-            type="text"
-            name="name"
-            value={formData.name}
-            onChange={handleChange}
-            placeholder="Name"
-            className={clsx(
-              "border border-primary bg-transparent text-primary px-2 py-2.5 outline-none max-w-150 rounded-xl",
-              errors.password && "!border-red-500"
+    <GuestRoute>
+      <div className="flex flex-col gap-5 h-screen items-center justify-center">
+        <h1 className="text-3xl text-primary text-center">
+          Create your account
+        </h1>
+        <form className="flex flex-col gap-3" onSubmit={handleSubmit}>
+          <label className="flex flex-col gap-1 text-primary">
+            <span className="text-primary text-xl font-semibold">Name</span>
+            <input
+              type="text"
+              name="name"
+              value={formData.name}
+              onChange={handleChange}
+              placeholder="Name"
+              className={clsx(
+                "border border-primary bg-transparent text-primary px-2 py-2.5 outline-none max-w-150 rounded-xl",
+                errors.password && "!border-red-500"
+              )}
+            />
+            {errors.name && (
+              <span className="text-red-500 text-sm">{errors.name}</span>
             )}
-          />
-          {errors.name && (
-            <span className="text-red-500 text-sm">{errors.name}</span>
-          )}
-        </label>
-        <label className="flex flex-col gap-1 text-primary">
-          <span className="text-primary text-xl font-semibold">Email</span>
-          <input
-            type="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            placeholder="you@example.com"
-            className={clsx(
-              "border border-primary bg-transparent text-primary px-2 py-2.5 outline-none max-w-150 rounded-xl",
-              errors.password && "!border-red-500"
+          </label>
+          <label className="flex flex-col gap-1 text-primary">
+            <span className="text-primary text-xl font-semibold">Email</span>
+            <input
+              type="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              placeholder="you@example.com"
+              className={clsx(
+                "border border-primary bg-transparent text-primary px-2 py-2.5 outline-none max-w-150 rounded-xl",
+                errors.password && "!border-red-500"
+              )}
+            />
+            {errors.email && (
+              <span className="text-red-500 text-sm">{errors.email}</span>
             )}
-          />
-          {errors.email && (
-            <span className="text-red-500 text-sm">{errors.email}</span>
-          )}
-        </label>
-        <label className="flex flex-col gap-1 text-primary">
-          <span className="text-primary text-xl font-semibold">Password</span>
-          <input
-            type="password"
-            placeholder="******"
-            name="password"
-            value={formData.password}
-            onChange={handleChange}
-            className={clsx(
-              "border border-primary bg-transparent text-primary px-2 py-2.5 outline-none max-w-150 rounded-xl",
-              errors.password && "!border-red-500"
+          </label>
+          <label className="flex flex-col gap-1 text-primary">
+            <span className="text-primary text-xl font-semibold">Password</span>
+            <input
+              type="password"
+              placeholder="******"
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
+              className={clsx(
+                "border border-primary bg-transparent text-primary px-2 py-2.5 outline-none max-w-150 rounded-xl",
+                errors.password && "!border-red-500"
+              )}
+            />
+            {errors.password && (
+              <span className="text-red-500 text-sm">{errors.password}</span>
             )}
-          />
-          {errors.password && (
-            <span className="text-red-500 text-sm">{errors.password}</span>
-          )}
-        </label>
-        {status && (
-          <span className="text-green-500 text-sm">{status}</span>
-        )}
-        <button disabled={loading} className="bg-primary text-bg border py-2.5 font-semibold border-primary text-xl rounded-xl cursor-pointer hover:bg-transparent hover:text-primary transition duration-300">
-          {loading ? 'Registering...' : 'Register'}
-        </button>
-        <h5 className="text-xl text-white ">
-          Already have an account?{" "}
-          <Link
-            href={"/login"}
-            className="text-primary hover:underline transition duration-300"
+          </label>
+          {status && <span className="text-green-500 text-sm">{status}</span>}
+          <button
+            disabled={loading}
+            className="bg-primary text-bg border py-2.5 font-semibold border-primary text-xl rounded-xl cursor-pointer hover:bg-transparent hover:text-primary transition duration-300"
           >
-            Log in
-          </Link>
-        </h5>
-      </form>
-    </div>
+            {loading ? "Registering..." : "Register"}
+          </button>
+          <h5 className="text-xl text-white ">
+            Already have an account?{" "}
+            <Link
+              href={"/login"}
+              className="text-primary hover:underline transition duration-300"
+            >
+              Log in
+            </Link>
+          </h5>
+        </form>
+      </div>
+    </GuestRoute>
   );
 };
 

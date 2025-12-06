@@ -6,6 +6,7 @@ import { z } from "zod";
 import { useAuth } from "@/context/authContext";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import { GuestRoute } from "@/components/GuestRoute";
 
 interface ErrorsState {
   email: string | null;
@@ -37,7 +38,7 @@ const LoginPage = () => {
   const [status, setStatus] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
 
-  const { refreshUser } = useAuth()
+  const { refreshUser } = useAuth();
 
   const router = useRouter();
 
@@ -89,64 +90,68 @@ const LoginPage = () => {
     }
   }
   return (
-    <div className="flex flex-col gap-5 h-screen items-center justify-center">
-      <h1 className="text-3xl text-primary text-center">
-        Log in to your account
-      </h1>
-      <form className="flex flex-col gap-3" onSubmit={handleSubmit}>
-        <label className="flex flex-col gap-1 text-primary">
-          <span className="text-primary text-xl font-semibold">Email</span>
-          <input
-            type="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            placeholder="you@example.com"
-            className={clsx(
-              "border border-primary bg-transparent text-primary px-2 py-2.5 outline-none max-w-150 rounded-xl",
-              errors.password && "!border-red-500"
+    <GuestRoute>
+      <div className="flex flex-col gap-5 h-screen items-center justify-center">
+        <h1 className="text-3xl text-primary text-center">
+          Log in to your account
+        </h1>
+        <form className="flex flex-col gap-3" onSubmit={handleSubmit}>
+          <label className="flex flex-col gap-1 text-primary">
+            <span className="text-primary text-xl font-semibold">Email</span>
+            <input
+              type="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              placeholder="you@example.com"
+              className={clsx(
+                "border border-primary bg-transparent text-primary px-2 py-2.5 outline-none max-w-150 rounded-xl",
+                errors.password && "!border-red-500"
+              )}
+            />
+            {errors.email && (
+              <span className="text-red-500 text-sm">{errors.email}</span>
             )}
-          />
-          {errors.email && (
-            <span className="text-red-500 text-sm">{errors.email}</span>
-          )}
-        </label>
-        <label className="flex flex-col gap-1 text-primary">
-          <span className="text-primary text-xl font-semibold">Password</span>
-          <input
-            type="password"
-            placeholder="******"
-            name="password"
-            value={formData.password}
-            onChange={handleChange}
-            className={clsx(
-              "border border-primary bg-transparent text-primary px-2 py-2.5 outline-none max-w-150 rounded-xl",
-              errors.password && "!border-red-500"
+          </label>
+          <label className="flex flex-col gap-1 text-primary">
+            <span className="text-primary text-xl font-semibold">Password</span>
+            <input
+              type="password"
+              placeholder="******"
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
+              className={clsx(
+                "border border-primary bg-transparent text-primary px-2 py-2.5 outline-none max-w-150 rounded-xl",
+                errors.password && "!border-red-500"
+              )}
+            />
+            {errors.password && (
+              <span className="text-red-500 text-sm">{errors.password}</span>
             )}
-          />
-          {errors.password && (
-            <span className="text-red-500 text-sm">{errors.password}</span>
+          </label>
+          {status && <span className="text-green-500 text-sm">{status}</span>}
+          {errors.general && (
+            <span className="text-red-500 text-sm">{errors.general}</span>
           )}
-        </label>
-        {status && <span className="text-green-500 text-sm">{status}</span>}
-        {errors.general && (
-          <span className="text-red-500 text-sm">{errors.general}</span>
-        )}
-        <Link className="underline text-primary" href='/forgot-password'>Forgot password?</Link>
-        <button className="bg-primary text-bg border py-2.5 font-semibold border-primary text-xl rounded-xl cursor-pointer hover:bg-transparent hover:text-primary transition duration-300">
-          {loading ? "Logging in..." : "Log In"}
-        </button>
-        <h5 className="text-xl text-white ">
-          Don&apos;t have an account ?{" "}
-          <Link
-            href={"/register"}
-            className="text-primary hover:underline transition duration-300"
-          >
-            Create now
+          <Link className="underline text-primary" href="/forgot-password">
+            Forgot password?
           </Link>
-        </h5>
-      </form>
-    </div>
+          <button className="bg-primary text-bg border py-2.5 font-semibold border-primary text-xl rounded-xl cursor-pointer hover:bg-transparent hover:text-primary transition duration-300">
+            {loading ? "Logging in..." : "Log In"}
+          </button>
+          <h5 className="text-xl text-white ">
+            Don&apos;t have an account ?{" "}
+            <Link
+              href={"/register"}
+              className="text-primary hover:underline transition duration-300"
+            >
+              Create now
+            </Link>
+          </h5>
+        </form>
+      </div>
+    </GuestRoute>
   );
 };
 
