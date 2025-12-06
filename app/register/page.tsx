@@ -6,11 +6,13 @@ import { z } from "zod";
 import axios from "axios";
 import { useAuth } from "@/context/authContext";
 import { GuestRoute } from "@/components/GuestRoute";
+import { useRouter } from "next/navigation";
 
 interface ErrorsState {
   name: string | null;
   email: string | null;
   password: string | null;
+  general: string | null;
 }
 
 type FormDataState = z.infer<typeof registerSchema>;
@@ -32,12 +34,16 @@ const RegisterPage = () => {
     name: null,
     email: null,
     password: null,
+    general: "",
   });
 
   const [status, setStatus] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
 
-  const { token, setToken } = useAuth();
+  const { refreshUser } = useAuth();
+
+  const router = useRouter();
+
   function handleChange(e: ChangeEvent<HTMLInputElement>) {
     setFormData({ ...formData, [e.target.name]: e.target.value });
 
@@ -59,6 +65,7 @@ const RegisterPage = () => {
         name: fieldErrors.name?.[0] || null,
         email: fieldErrors.email?.[0] || null,
         password: fieldErrors.password?.[0] || null,
+        general: null,
       });
       return;
     }
@@ -66,19 +73,23 @@ const RegisterPage = () => {
     try {
       const res = await axios.post(
         `${process.env.NEXT_PUBLIC_API_URL}/api/auth/register`,
-        {
-          ...formData,
-        }
+        formData,
+        { withCredentials: true }
       );
-      console.log(res.data);
+
       setStatus(
         res.data.msg || "Registration successful! Please verify your email."
       );
+
+      await refreshUser();
+
       setFormData({ name: "", email: "", password: "" });
-      setToken(res.data.token);
-      console.log(res.data);
-    } catch (e) {
-      console.log(e);
+    } catch (e: any) {
+      if (e.response?.data?.message) {
+        setErrors({ ...errors, general: e.response?.data?.message });
+      } else {
+        setErrors({ ...errors, general: "Something went wrong" });
+      }
     } finally {
       setLoading(false);
     }
@@ -142,6 +153,9 @@ const RegisterPage = () => {
             )}
           </label>
           {status && <span className="text-green-500 text-sm">{status}</span>}
+          {errors.general && (
+            <span className="text-red-500 text-sm">{errors.general}</span>
+          )}
           <button
             disabled={loading}
             className="bg-primary text-bg border py-2.5 font-semibold border-primary text-xl rounded-xl cursor-pointer hover:bg-transparent hover:text-primary transition duration-300"
