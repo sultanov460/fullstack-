@@ -1,6 +1,6 @@
 import Container from "@/app/components/Container";
 import { Product } from "@/types/products";
-import ProductCard from "@/widgets/ProductCard";
+import ProductDetail from "@/widgets/ProductDetail";
 import axios from "axios";
 interface ProductDetailsProps {
   params: Promise<{ productId: string }>;
@@ -17,7 +17,7 @@ const ProductDetails = async ({ params }: ProductDetailsProps) => {
 
   return (
     <Container className="mt-10">
-      <ProductCard item={product} />
+      <ProductDetail item={product} />
     </Container>
   );
 };
