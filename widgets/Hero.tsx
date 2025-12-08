@@ -11,11 +11,20 @@ const Hero = () => {
         dolores molestias, repellendus a quas excepturi nisi itaque sed
         exercitationem blanditiis.
       </p>
-      <button className="bg-primary text-xl text-bg px-4 py-2.5 border border-primary rounded-2xl hover:bg-transparent hover:text-primary transition duration-300 flex items-center gap-3 cursor-pointer">
+      <button className="bg-primary w-55  text-xl text-bg px-4 py-2.5 justify-center border border-primary rounded-2xl hover:bg-transparent hover:text-primary transition duration-300 flex items-center gap-3 cursor-pointer">
         Get started <FaArrowRight size={20} />
       </button>
-      <Link href={'/profile'} className="bg-primary text-xl text-bg px-4 py-2.5 border border-primary rounded-2xl hover:bg-transparent hover:text-primary transition duration-300 flex items-center gap-3 cursor-pointer">
+      <Link
+        href={"/profile"}
+        className="bg-primary w-55  text-xl text-bg px-4 py-2.5 justify-center border border-primary rounded-2xl hover:bg-transparent hover:text-primary transition duration-300 flex items-center gap-3 cursor-pointer"
+      >
         Go to Profile <FaArrowRight size={20} />
+      </Link>
+      <Link
+        href={"/products"}
+        className="bg-primary w-55  text-xl text-bg px-4 py-2.5 justify-center border border-primary rounded-2xl hover:bg-transparent hover:text-primary transition duration-300 flex items-center gap-3 cursor-pointer"
+      >
+        Go to Products <FaArrowRight size={20} />
       </Link>
     </div>
   );

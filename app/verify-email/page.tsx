@@ -2,7 +2,7 @@
 
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import { useAuth } from "../context/authContext";
+import axios from "axios";
 
 const VerifyEmailPage = () => {
   const searchParams = useSearchParams();
@@ -11,7 +11,6 @@ const VerifyEmailPage = () => {
 
   const [status, setStatus] = useState<string>("Verifying...");
 
-  const { setToken } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
@@ -21,22 +20,22 @@ const VerifyEmailPage = () => {
     }
 
     const verifyUser = async () => {
-      const res = await fetch(
+      const res = await axios.post(
         `${process.env.NEXT_PUBLIC_API_URL}/api/auth/verify-email`,
         {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ email, token }),
+          email,
+          token,
+        },
+        {
+          withCredentials: true,
         }
       );
 
-      const data = await res.json();
+      const data = res.data;
 
-      if (res.ok) {
+      if (data) {
         setStatus("Email verified successfully!");
-        setToken(data.token);
+
         router.push("/");
       } else setStatus(data.error || "Verification failed.");
     };
