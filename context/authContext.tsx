@@ -66,6 +66,14 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     }
   }
 
+  if (loading) {
+    return (
+      <div className="fixed inset-0 bg-black/60 text-white text-4xl flex items-center justify-center">
+        Loading...
+      </div>
+    )
+  }
+
   return (
     <authContext.Provider value={{ user, loading, refreshUser, logout }}>
       {children}

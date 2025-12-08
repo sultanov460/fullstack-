@@ -17,9 +17,7 @@ export default function ForgotPassword() {
     general: null,
   });
 
-  const loginSchema = z.object({
-    email: z.email("Invalid email"),
-  });
+  const loginSchema = z.email('Invalid email address');
 
   const router = useRouter();
 
@@ -42,17 +40,21 @@ export default function ForgotPassword() {
 
     const result = loginSchema.safeParse(email);
 
+
     if (!result.success) {
       const flattened = z.flattenError(result.error);
 
-      const fieldErrors = flattened.fieldErrors;
+      const formErrors = flattened.formErrors;
+      console.log(formErrors);
 
       setErrors({
-        email: fieldErrors.email?.[0] || null,
+        email: formErrors[0] || null,
         general: null,
       });
       return;
     }
+
+    setErrors({ email: null, general: null });
 
     try {
       const res = await axios.post(

@@ -1,6 +1,6 @@
 import Link from "next/link";
 import axios from "axios";
-import Container from "../components/Container";
+import Container from "../../components/Container";
 import { Product } from "@/types/products";
 import ProductCard from "@/widgets/ProductCard";
 

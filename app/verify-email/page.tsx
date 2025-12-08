@@ -1,8 +1,8 @@
 "use client";
-
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { useAuth } from "@/context/authContext";
 
 const VerifyEmailPage = () => {
   const searchParams = useSearchParams();
@@ -12,6 +12,8 @@ const VerifyEmailPage = () => {
   const [status, setStatus] = useState<string>("Verifying...");
 
   const router = useRouter();
+
+  const { refreshUser } = useAuth()
 
   useEffect(() => {
     if (!email || !token) {
@@ -35,7 +37,7 @@ const VerifyEmailPage = () => {
 
       if (data) {
         setStatus("Email verified successfully!");
-
+        await refreshUser();
         router.push("/");
       } else setStatus(data.error || "Verification failed.");
     };
