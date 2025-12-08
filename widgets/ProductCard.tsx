@@ -9,7 +9,7 @@ const ProductCard = ({ item }: ProductCardProps) => {
   return (
     <Link
       href={`/products/${item._id}`}
-      className="p-4 rounded-xl shadow-lg border shadow-primary border-gray-700 bg-gray-800 hover:scale-105 transition flex flex-col gap-3 justify-center items-center"
+      className="p-4 rounded-xl shadow-lg border shadow-primary/60 border-gray-700 bg-gray-800 hover:scale-105 transition flex flex-col gap-3 justify-center items-center"
     >
       <img
         src={item.image}
