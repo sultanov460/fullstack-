@@ -45,7 +45,7 @@ const LoginPage = () => {
   function handleChange(e: ChangeEvent<HTMLInputElement>) {
     setFormData({ ...formData, [e.target.name]: e.target.value });
 
-    setErrors({ ...errors, [e.target.name]: "" });
+    setErrors({ ...errors, [e.target.name]: null });
   }
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
